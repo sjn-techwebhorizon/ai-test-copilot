@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "./App.css";
+import VulnerableComponent from "./VulnerableComponent";
 
 function App() {
   const [count, setCount] = useState(0);
   const [todos, setTodos] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [userComment, setUserComment] = useState("");
 
   const addTodo = () => {
     if (inputValue.trim() !== "") {
@@ -19,6 +21,16 @@ function App() {
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  // XSS Vulnerability: Dangerous comment handling
+  const addComment = () => {
+    const commentDiv = document.getElementById("comments-section");
+    if (commentDiv && userComment) {
+      // Vulnerable: Direct innerHTML assignment with user input
+      commentDiv.innerHTML += `<div class="comment">${userComment}</div>`;
+      setUserComment("");
+    }
   };
 
   return (
@@ -64,9 +76,8 @@ function App() {
           <div className="todo-list">
             {todos.map((todo) => (
               <div key={todo.id} className={`todo-item ${todo.completed ? "completed" : ""}`}>
-                <span onClick={() => toggleTodo(todo.id)} className="todo-text">
-                  {todo.text}
-                </span>
+                {/* XSS Vulnerability: Rendering user input with dangerouslySetInnerHTML */}
+                <span onClick={() => toggleTodo(todo.id)} className="todo-text" dangerouslySetInnerHTML={{ __html: todo.text }} />
                 <button onClick={() => deleteTodo(todo.id)} className="btn btn-danger btn-small">
                   Delete
                 </button>
@@ -75,6 +86,35 @@ function App() {
           </div>
 
           {todos.length === 0 && <p className="empty-state">No todos yet. Add one above! ✨</p>}
+
+          {/* Additional XSS vulnerable section */}
+          <div className="comment-section" style={{ marginTop: "20px" }}>
+            <h3>Comments (Vulnerable to XSS)</h3>
+            <div style={{ marginBottom: "10px" }}>
+              <input
+                type="text"
+                value={userComment}
+                onChange={(e) => setUserComment(e.target.value)}
+                placeholder="Add a comment (try XSS payload)..."
+                className="todo-input-field"
+                style={{ marginRight: "10px" }}
+              />
+              <button onClick={addComment} className="btn btn-primary">
+                Add Comment
+              </button>
+            </div>
+            <div
+              id="comments-section"
+              style={{
+                background: "rgba(255,255,255,0.1)",
+                padding: "10px",
+                borderRadius: "5px",
+                minHeight: "50px",
+              }}
+            >
+              {/* Comments will be added here via innerHTML (vulnerable) */}
+            </div>
+          </div>
         </div>
 
         <div className="features">
@@ -87,6 +127,9 @@ function App() {
             <li>✅ Responsive layout</li>
           </ul>
         </div>
+
+        {/* Vulnerable Component for Security Testing */}
+        <VulnerableComponent />
       </header>
     </div>
   );

@@ -28,7 +28,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "@microsoft/eslint-formatter-sarif": "^3.0.0",
     "jest-sonar-reporter": "^2.0.0",
-    "audit-ci": "^6.6.1",
+    "audit-ci": "^7.1.0",
     "serve": "^14.2.1"
   },
   "browserslist": {

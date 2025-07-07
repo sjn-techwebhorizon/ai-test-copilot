@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "prettier": "^3.0.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.0.0",
     "@microsoft/eslint-formatter-sarif": "^3.0.0",
     "jest-sonar-reporter": "^2.0.0",
